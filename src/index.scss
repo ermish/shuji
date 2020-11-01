@@ -1,0 +1,52 @@
+body{
+    width: 100%;
+    background-color: lavenderblush;
+    margin: 0;
+    padding: 0;
+}
+
+#title{
+    font-family: 'Indie Flower', cursive;
+    font-size: 5em;
+    text-align: center;    
+    margin-bottom: 1em;
+    width: 100%;
+
+    @media only screen and (max-width: 450px) {
+        font-size: 4em;
+    }
+}
+
+#page{    
+    .primary-image{
+        display: block;
+        width:50%;
+        margin: 0 auto;
+
+        @media only screen and (max-width: 900px) {
+            width:100%;
+        }
+        
+        img{
+            width: 100%;
+
+            @media only screen and (max-width: 900px) {
+                display: block;
+                margin: 0 auto;
+            }
+        }
+    }
+}
+
+footer{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+
+    #footer-content{
+        font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+        font-size: 1em;
+        text-align: center;   
+    }    
+}

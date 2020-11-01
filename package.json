@@ -1,0 +1,22 @@
+{
+    "name": "justhappythoughts",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "build": "yarn && parcel build ./src/index.pug",
+        "start": "yarn && parcel watch ./src/index.pug",
+        "lint": "eslint ./src/**.js"
+    },
+    "dependencies": {
+        "parcel": "^2.0.0-nightly.228"
+    },
+    "devDependencies": {
+        "eslint": "6.8.0",
+        "pug": "2.0.4",
+        "sass": "1.26.3",
+        "stylelint": "13.3.3",
+        "stylelint-config-recommended": "3.0.0",
+        "stylelint-order": "4.0.0",
+        "stylelint-scss": "3.17.1"
+    }
+}
