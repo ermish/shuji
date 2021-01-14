@@ -6,7 +6,7 @@
         "build": "yarn && parcel build ./src/index.ts",
         "start": "yarn && parcel watch ./src/index.ts",
         "lint": "eslint ./src/**.js",
-        "test": "jest "
+        "test": "jest --verbose"
     },
     "dependencies": {
         "fs-extra": "9.0.1",
@@ -16,6 +16,8 @@
     "devDependencies": {
         "@babel/core": "^7.12.10",
         "@babel/preset-env": "^7.12.11",
+        "@babel/preset-react": "^7.12.10",
+        "@babel/preset-typescript": "^7.12.7",
         "@types/fs-extra": "^9.0.6",
         "@types/jest": "^26.0.20",
         "@types/klaw": "^3.0.1",

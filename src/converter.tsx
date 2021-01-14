@@ -58,16 +58,13 @@ export const convertMarkdownToJSX = async (markdownString: string, reactContextN
 }
 
 const convertMarkdownAndHtmlToJsx = (markdownString: string): string => {
-    let markdownJsx = ''
     try {
-        // @ts-ignore
-        const jsxString = renderToStaticMarkup(<ReactMarkdownWithHtml children={mdFileMarkdownString} allowDangerousHtml />, markdownJsx)
+        const jsxString = renderToStaticMarkup(<ReactMarkdownWithHtml children={markdownString} allowDangerousHtml />)
+        return jsxString
     } catch (error) {
         console.log(`error converting markdown to jsx: ${error}`)
         throw new error()
     }
-
-    return markdownJsx
 }
 
 const extractFrontMatter = (stringWithFrontMatter: string, reactContextName?: string): FrontMatterSplitFromMarkdown => {

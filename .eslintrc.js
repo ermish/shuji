@@ -90,6 +90,12 @@ module.exports = {
         'object-shorthand': [2, 'methods'],
         'operator-linebreak': [0, 'before'],
         'padded-blocks': [2, 'never'],
+        'padding-line-between-statements': [
+            2,
+            { blankLine: "always", prev: ["const", "let", "var"], next: "*"},
+            { blankLine: "any",    prev: ["const", "let", "var"], next: ["const", "let", "var"]},
+            { blankLine: "always", prev: "*", next: "return"}
+        ],
         'prefer-arrow-callback': 2,
         'prefer-const': 2,
         'prefer-spread': 2,

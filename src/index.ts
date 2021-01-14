@@ -32,8 +32,8 @@ export const compile = async (options?: Options): Promise<number> => {
         const jsxStrings = await convertMarkdownFilesToJSXFiles(mdFiles, userOptions.reactContextName)
         await writeJsxFiles(userOptions.outputFolderPath, jsxStrings)
 
-        return 1
-    } catch (error) {
         return 0
+    } catch (error) {
+        return 1
     }
 }

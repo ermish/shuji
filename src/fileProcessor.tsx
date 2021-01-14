@@ -1,5 +1,4 @@
-import { writeFile } from 'fs-extra'
-import { readdir } from 'fs'
+import { promises } from 'fs'
 import { extname, basename } from 'path'
 
 type File = {
@@ -7,42 +6,44 @@ type File = {
     data: string
 }
 
-export const getMdFilesFromFolder = async (folderPath: string) : Promise<File[]> => {
-    const files : File[] = []
-    
+export const getMdFilesFromFolder = async (folderPath: string): Promise<File[]> => {
+    let mdFiles: File[] = []
+
     try {
-        readdir(folderPath, (err, filesInDir) => {
-            if(err) {
-                console.log(`Shuji: error retrieving files from '${folderPath}': ${err}`)
-                return
-            }
+        const fileNamesInDir = await promises.readdir(folderPath)
 
-            if(filesInDir.length < 1) {
-                console.log(`Shuji: No .md files found in folder '${folderPath}'`)
-                return
-            }
-            
-            console.log(`Shuji: Processing ${filesInDir.length} files...`)
+        if (fileNamesInDir.length < 1) {
+            console.log(`Shuji: No .md files found in folder '${folderPath}'`)
+            return mdFiles
+        }
 
-            filesInDir.map(file => {
-                if(extname(file) != '.md') 
-                    return
-                
-                files.push({ fileName: basename(file), data: file })
-            })            
-         })     
+        console.log(`Shuji: Processing ${fileNamesInDir.length} files...`)
+
+        mdFiles = await fileNamesInDir.reduce(async (validFilesPromise: Promise<File[]>, fileName: string) => {
+            const validFiles = await validFilesPromise
+
+            if (extname(fileName) != '.md') return validFiles
+
+            const fileData = await promises.readFile(`${folderPath}/${fileName}`)
+            validFiles.push({ fileName: basename(fileName, '.md'), data: fileData.toString() })
+        
+            return validFiles
+        }, Promise.resolve([]))
     } catch (err) {
-        console.log(`Shuji: No .md files found in folder ${folderPath}`)
+        console.log(`Shuji: error retrieving files from '${folderPath}': ${err}`)
     }
 
-    return files
+    return mdFiles
 }
 
-export const writeJsxFiles = async (folderPath: string, jsxFiles: File[]) : Promise<void> => {
+export const writeJsxFiles = async (folderPath: string, jsxFiles: File[]): Promise<void> => {
     try {
-        await Promise.all(jsxFiles.map(async jsxFile => {
-            await writeFile(folderPath, jsxFile, 'utf8')
-        }))
+        await Promise.all(
+            jsxFiles.map(async jsxFile => {
+                await promises.mkdir(folderPath, { recursive: true })
+                await promises.writeFile(`${folderPath}/${jsxFile.fileName}.jsx`, jsxFile.data, 'utf8')
+            })
+        )
     } catch (error) {
         console.log(`Shuji: error writing markdown files: ${error}`)
     }
