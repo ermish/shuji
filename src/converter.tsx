@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import ReactMarkdownWithHtml from 'react-markdown/with-html'
 import gfm from 'remark-gfm'
 import matter from 'gray-matter'
+import { stringify } from 'json5'
 
 interface File {
     fileName: string
@@ -27,12 +28,13 @@ interface FrontMatterSplitFromMarkdown {
  * @param {string} `reactContextName` name of react context object to assign front-matter variables to.
  * @return {Promise<JsxFiles>} Files containing jsx
  */
-export const convertMarkdownFilesToJSXFiles = async (markdownFiles: File[], reactContextName?: string): Promise<File[]> => {
+export const convertMarkdownFilesToJSXFiles = async (markdownFiles: File[], useReactHelmetFormat: boolean, reactContextName?: string): Promise<File[]> => {
     const files = await Promise.all(
         markdownFiles.map(async file => {
             const frontMatterAndMarkdown = extractFrontMatter(file.data, reactContextName)
             const jsxString = convertMarkdownAndHtmlToJsx(frontMatterAndMarkdown.markdownString)
-            return { fileName: file.fileName, data: jsxString }
+            const reactComponentString = createJsxComponentString(file.fileName, jsxString, useReactHelmetFormat, frontMatterAndMarkdown.frontMatterJsxString)
+            return { fileName: file.fileName, data: reactComponentString }
         })
     )
 
@@ -67,10 +69,10 @@ const convertMarkdownAndHtmlToJsx = (markdownString: string): string => {
     }
 }
 
-const extractFrontMatter = (stringWithFrontMatter: string, reactContextName?: string): FrontMatterSplitFromMarkdown => {
+const extractFrontMatter = (stringWithFrontMatter: string, useReactHelmetFormat: boolean, reactContextName?: string): FrontMatterSplitFromMarkdown => {
     try {
         const { data, content } = matter(stringWithFrontMatter)
-        const frontMatterJsxString = createFrontMatterJSXString(data, reactContextName)
+        const frontMatterJsxString = createFrontMatterJSXString(data, useReactHelmetFormat, reactContextName)
 
         return {
             frontMatterJsxString: frontMatterJsxString,
@@ -82,23 +84,44 @@ const extractFrontMatter = (stringWithFrontMatter: string, reactContextName?: st
     }
 }
 
-const createFrontMatterJSXString = (propsToAssign: Object, existingContextName?: string): string => {
+const createFrontMatterJSXString = (propsToAssign: Object, useReactHelmetFormat: boolean, existingContextName?: string): string => {
     const contextName = existingContextName ?? 'ShujiContext'
 
-    const createContextString = existingContextName
-        ? `
-        export const ${contextName} = React.createContext(
-            ...variables
-        );
-    `
-        : ''
+    // Create new context if it doesn't exist
+    // const createContextString = existingContextName
+    //     ? `export const ${contextName} = React.createContext();`
+    //     : ''
 
-    const propAssignmentString = `
-        for (const propName in propsToAssign) {
-            window[contextName][propName] = propsToAssign[propName as keyof Object];
-        }
-    `
+    if(Object.keys(propsToAssign).length < 1)
+        return ''
 
-    const jsxString = createContextString + propAssignmentString
-    return jsxString
+    let propAssignmentString = ''
+
+    for (const propName in propsToAssign) {
+        const propValue = propsToAssign[propName as keyof Object]
+        let propValueStringified = stringify(propValue)
+      
+
+        useReactHelmetFormat 
+            ? propAssignmentString += `\t ${contextName}.${propName} = ${propValueStringified} \n`
+            : propAssignmentString += `\t ${contextName}.${propName} = ${propValueStringified} \n`
+
+        propAssignmentString += `\t ${contextName}.${propName} = ${propValueStringified} \n`
+    }
+
+    return propAssignmentString
+}
+
+const createJsxComponentString = (componentName: string, reactString: string, useReactHelmetFormat: boolean, frontMatterString?: string): string => {
+   const capitalizedName = componentName.replace(/^\w/, c => c.toUpperCase())
+   const camelCasedName = componentName.replace(/^\w/, c => c.toLowerCase())
+    let reactComponent = `export const ${capitalizedName} = () => { \n${useReactHelmetFormat ? '' : frontMatterString}
+    return ( 
+        <div className='${camelCasedName}'>
+            ${useReactHelmetFormat ? frontMatterString : ''}
+            ${reactString}
+        </div>
+    )\n}`
+   
+    return reactComponent
 }

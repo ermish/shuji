@@ -5,12 +5,16 @@ interface Options {
     inputFolderPath?: string
     outputFolderPath?: string
     reactContextName?: string
+    useReactHelmetFormat: boolean
+    deleteExistingOutputFolder?: boolean 
 }
 
 export const defaultOptions = {
     inputFolderPath: 'pages',
     outputFolderPath: 'jsxPages',
-    reactContextName: 'shuji'
+    reactContextName: 'ShujiContext',
+    useReactHelmetFormat: true,
+    deleteExistingOutputFolder: false
 }
 
 /**
@@ -29,8 +33,8 @@ export const compile = async (options?: Options): Promise<number> => {
         }
 
         const mdFiles = await getMdFilesFromFolder(userOptions.inputFolderPath)
-        const jsxStrings = await convertMarkdownFilesToJSXFiles(mdFiles, userOptions.reactContextName)
-        await writeJsxFiles(userOptions.outputFolderPath, jsxStrings)
+        const jsxStrings = await convertMarkdownFilesToJSXFiles(mdFiles, userOptions.reactContextName, useReactHelmetFormat)
+        await writeJsxFiles(userOptions.outputFolderPath, jsxStrings, userOptions.deleteExistingOutputFolder)
 
         return 0
     } catch (error) {

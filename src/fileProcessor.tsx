@@ -36,11 +36,14 @@ export const getMdFilesFromFolder = async (folderPath: string): Promise<File[]> 
     return mdFiles
 }
 
-export const writeJsxFiles = async (folderPath: string, jsxFiles: File[]): Promise<void> => {
+export const writeJsxFiles = async (folderPath: string, jsxFiles: File[], deleteExistingOutputFolder: boolean): Promise<void> => {
     try {
+        if(deleteExistingOutputFolder)
+            await promises.rmdir(folderPath)
+
+        await promises.mkdir(folderPath, { recursive: true })
         await Promise.all(
             jsxFiles.map(async jsxFile => {
-                await promises.mkdir(folderPath, { recursive: true })
                 await promises.writeFile(`${folderPath}/${jsxFile.fileName}.jsx`, jsxFile.data, 'utf8')
             })
         )
