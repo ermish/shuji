@@ -4,6 +4,30 @@ Shuji is a Markdown to React JSX converter!
 
 &nbsp;
 
+## What is Shuji?
+
+It was originally designed for being able to write blog files without the overhead of a framework like gatsby or jekyll.
+Templating frameworks used to be very beneficial, but often come with their own complexities and the biggest problem : **you lose control over your build system.**
+I got tired of waiting for bug-fixes, library updates, and having to work around their configurations. I just wanted an easy way to easily generate new blog articles without the overhead.
+
+### Shuji lets you:
+
+* Design and organize your own templates however you want.
+* Configure your build system however you want. You can use webpack, parcel, rollup, or whatever you prefer.
+* Easily and automatically generate new pages from markdown files.
+* Converts Markdown files to JSX files, even including any html in the markdown.
+* Extract front-matter metadata into a react context.
+
+&nbsp;
+
+## How it works
+
+* It will convert `.md` files that you provide, generate a file with an exported react component.
+  * front-matter is converted to a react context object.
+  * The actual markdown content will be converted to JSX.
+
+&nbsp;
+
 ## Getting started
 
 ### Directly importing the library
@@ -61,29 +85,7 @@ See options [below](##Config-Options)
 
 &nbsp;
 
-## What is Shuji?
-
-It was originally designed for being able to write blog files without the overhead of a framework like gatsby or jekyll.
-Templating frameworks used to be very beneficial, but often come with their own complexities and the biggest problem : **you lose control over your build system.**
-I got tired of waiting for bug-fixes, library updates, and having to work around their configurations. I just wanted an easy way to easily generate new blog articles without the overhead.
-
-### Shuji lets you:
-
-* Design and organize your own templates however you want.
-* Configure your build system however you want. You can use webpack, parcel, rollup, or whatever you prefer.
-* Easily and automatically generate new pages from markdown files.
-* Converts Markdown files to JSX files, even including any html in the markdown.
-* Extract front-matter metadata into a react context.
-
-&nbsp;
-
-## How it works
-
-* It will convert `.md` files that you provide, generate a file with an exported react component.
-  * front-matter is converted to a react context object.
-  * The actual markdown content will be converted to JSX.
-
-### Here's an example
+## Examples
 
 input: `articles/simple.md`
 
