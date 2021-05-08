@@ -1,4 +1,4 @@
-import { compile, defaultOptions } from './index'
+import { compileMarkdown, defaultOptions } from '.'
 import { existsSync } from 'fs'
 import { promises } from 'fs'
 
@@ -11,7 +11,7 @@ const testData = {
 
 describe('compile', () => {
     test('works', async () => {
-        const result = await compile({ inputFolderPath: testData.testInputFolder })
+        const result = await compileMarkdown({ inputFolderPath: testData.testInputFolder })
 
         expect(result).toEqual(0)
 
@@ -24,7 +24,7 @@ describe('compile', () => {
     })
 
     test('output folder can be changed', async () => {
-        const result = await compile({ inputFolderPath: testData.testInputFolder, outputFolderPath: testData.testOutputFolder })
+        const result = await compileMarkdown({ inputFolderPath: testData.testInputFolder, outputFolderPath: testData.testOutputFolder })
 
         expect(result).toEqual(0)
 
@@ -40,7 +40,7 @@ describe('compile', () => {
 describe('front matter tests', () => {
     test('react context can be changed', async () => {
 
-        const result = await compile({ inputFolderPath: testData.testInputFolder, reactContextName: testData.testReactContextName })
+        const result = await compileMarkdown({ inputFolderPath: testData.testInputFolder, reactContextName: testData.testReactContextName })
 
         expect(result).toEqual(0)
 
@@ -58,7 +58,7 @@ describe('front matter tests', () => {
 
     test('react context variable is properly set', async () => {
 
-        const result = await compile({ inputFolderPath: testData.testInputFolder, reactContextName: testData.testReactContextName, reactContextVarName: testData.testReactContextVarName })
+        const result = await compileMarkdown({ inputFolderPath: testData.testInputFolder, reactContextName: testData.testReactContextName, reactContextVarName: testData.testReactContextVarName })
 
         expect(result).toEqual(0)
 

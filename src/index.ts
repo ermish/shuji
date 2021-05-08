@@ -10,8 +10,8 @@ interface Options {
 }
 
 export const defaultOptions = {
-    inputFolderPath: 'pages',
-    outputFolderPath: 'jsxPages',
+    inputFolderPath: 'markdown',
+    outputFolderPath: 'jsxMarkdown',
     reactContextName: 'ShujiContext',
     reactContextVarName: 'shuji',
     deleteExistingOutputFolder: false
@@ -21,9 +21,9 @@ export const defaultOptions = {
  * Converts Markdown files to JSX files, including any html in the markdown.
  * Also, front-matter will be extracted in js variables in the react component.
  * @param {Options} User defined options to override default values.
- * @return {Promise<JsxFiles>} files
+ * @return {Promise<number>} files
  */
-export const compile = async (options?: Options): Promise<number> => {
+export const compileMarkdown = async (options?: Options): Promise<number> => {
     try {
         const userOptions = {
             ...defaultOptions,
