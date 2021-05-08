@@ -4,7 +4,64 @@ Shuji is a Markdown to React JSX converter!
 
 &nbsp;
 
-## Why?
+## Getting started
+
+### Directly importing the library
+
+Install Shuji
+
+```terminal
+yarn add --dev shuji
+or
+npm install --dev shuji
+```
+
+Import the shuji `compile` method.
+
+```js
+import { compileMarkdown } from 'shuji'
+```
+
+Call the async method `compileMarkdown` which takes an `options` object and returns a `0` upon success or a `1` if there's an error.
+
+Check out all the [properties](##Config-Options)
+
+```js
+const shujiOptions = {
+    inputFolderPath: 'blogArticles',
+    outputFolderPath: 'compiledArticles'
+}
+
+const isSuccessful = await compileMarkdown(shujiOptions)
+```
+
+&nbsp;
+
+### Using Parcel
+
+Install the parcel plugin
+
+```terminal
+yarn add --dev parcel-plugin-shuji
+or
+npm install --dev parcel-plugin-shuji
+```
+
+Parcel will automatically look for `.md` files in the `./markdown` folder and compile them into the `./jsxMarkdown` folder.
+
+You can configure several options by adding a `shuji.config.json` or `.shujirc.json` file in your **root directory** and parcel will automatically load it.
+
+See options [below](##Config-Options)
+
+&nbsp;
+
+### Using Webpack
+
+...coming soon~
+
+&nbsp;
+
+## What is Shuji?
 
 It was originally designed for being able to write blog files without the overhead of a framework like gatsby or jekyll.
 Templating frameworks used to be very beneficial, but often come with their own complexities and the biggest problem : **you lose control over your build system.**
@@ -100,7 +157,6 @@ Node react stuffs
 #### The end
 ```
 
-
 output: `jsxPages/frontmatterexample.jsx`
 
 ```js
@@ -135,64 +191,6 @@ export const Frontmatterexample = () => {
     )
 }
 ```
-
-&nbsp;
-
-## Getting started
-
-### Using Parcel
-
-Install the parcel plugin
-```
-yarn add --dev parcel-plugin-shuji
-or
-npm install --dev parcel-plugin-shuji
-```
-
-Parcel will automatically look for `.md` files in the `./markdown` folder and compile them into the `./jsxMarkdown` folder.
-
-
-You can configure several options by adding a `shuji.config.json` or `.shujirc.json` file in your **root directory** and parcel will automatically load it.
-
-See options [below](##Config-Options)
-
-&nbsp;
-
-### Using Webpack
-
-...coming soon~
-
-&nbsp;
-
-### Directly importing the library
-
-Install Shuji
-```
-yarn add --dev shuji
-or
-npm install --dev shuji
-```
-
-Import the shuji `compile` method.
-
-```js
-import { compileMarkdown } from 'shuji'
-```
-
-Call the async method `compileMarkdown` which takes an `options` object and returns a `0` upon success or a `1` if there's an error.
-See all the [properties](##Config-Options)
-
-
-```js
-const shujiOptions = {
-    inputFolderPath: 'blogArticles',
-    outputFolderPath: 'compiledArticles'
-}
-
-const isSuccessful = await compileMarkdown(shujiOptions)
-```
-
-
 
 &nbsp;
 
