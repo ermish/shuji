@@ -15,7 +15,7 @@
         "converter"
       ],
     "repository": "ermish/shuji",
-    "main": "src/index.js",
+    "main": "dist/index.js",
     "scripts": {
         "build": "yarn && parcel build ./src/index.ts --dist-dir dist",
         "start": "yarn && parcel watch ./src/index.ts --dist-dir dist",
