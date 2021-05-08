@@ -1,7 +1,6 @@
 {
-    "name": "shuji",
+    "name": "@ermish/shuji",
     "version": "1.0.0",
-    "private": false,
     "author": "ermish <philipermish@gmail.com>",
     "license": "MIT",
     "description": "A Markdown to React JSX converter",
