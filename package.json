@@ -13,7 +13,7 @@
         "front matter",
         "converter"
       ],
-    "repository": "ermish/shuji",
+    "repository": "https://github.com/Ermish/shuji",
     "main": "dist/index.js",
     "collaborators": [
         "ermish <philipermish@gmail.com>"
