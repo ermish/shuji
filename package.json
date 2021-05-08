@@ -15,6 +15,9 @@
       ],
     "repository": "ermish/shuji",
     "main": "dist/index.js",
+    "collaborators": [
+        "ermish <philipermish@gmail.com>"
+    ],
     "scripts": {
         "build": "yarn && parcel build ./src/index.ts --dist-dir dist",
         "start": "yarn && parcel watch ./src/index.ts --dist-dir dist",
