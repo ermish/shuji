@@ -18,6 +18,12 @@
     "collaborators": [
         "ermish <philipermish@gmail.com>"
     ],
+    "files":  [
+        "dist/",
+        "package.json",
+        "license",
+        "README.md"
+    ],
     "scripts": {
         "build": "yarn && parcel build ./src/index.ts --dist-dir dist",
         "start": "yarn && parcel watch ./src/index.ts --dist-dir dist",
