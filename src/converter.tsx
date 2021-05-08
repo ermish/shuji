@@ -1,8 +1,6 @@
 import React from 'react'
-import { render } from 'react-dom'
 import { renderToStaticMarkup } from 'react-dom/server'
 import ReactMarkdown from 'react-markdown'
-import gfm from 'remark-gfm'
 import matter from 'gray-matter'
 import { stringify } from 'json5'
 
@@ -113,8 +111,12 @@ const createFrontMatterJSXString = (propsToAssign: Object, reactContextVarName: 
         propAssignmentString += `\t\t${propName} = ${propValueStringified}, \n`
     }
 
-    let contextAssignmentString = `\n\tconst [${camelCasedVarName}, ${setContextVarName}] = useContext('${reactContextName}')`
-    contextAssignmentString += '\n\n\tsetMetadata({' + `\n\t\t...${camelCasedVarName},` + `\n${propAssignmentString}` + `\n\t})\n`
+    const contextAssignmentString =
+    `\n\tconst [${camelCasedVarName}, ${setContextVarName}] = useContext('${reactContextName}')`
+    + `\n\n\t${setContextVarName}({`
+        + `\n\t\t...${camelCasedVarName},`
+        + `\n${propAssignmentString}`
+    + `\n\t})\n`
 
     return contextAssignmentString
 }
