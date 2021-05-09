@@ -6,31 +6,37 @@ type File = {
     data: string
 }
 
-export const getMdFilesFromFolder = async (folderPath: string): Promise<File[]> => {
+export const getMdFilesFromFolder = async (path: string): Promise<File[]> => {
     let mdFiles: File[] = []
 
     try {
-        const fileNamesInDir = await promises.readdir(folderPath)
+        const pathStat = await promises.lstat(path)
+        const isPathADirectory = pathStat.isDirectory()
+
+        const fileNamesInDir =  isPathADirectory
+            ? await promises.readdir(path)
+            : [basename(path)]
 
         if (fileNamesInDir.length < 1) {
-            console.log(`Shuji: No .md files found in folder '${folderPath}'`)
+            console.log(`Shuji: No .md file(s) found in '${path}'`)
             return mdFiles
         }
 
-        console.log(`Shuji: Processing ${fileNamesInDir.length} files...`)
+        console.log(`Shuji: Processing ${fileNamesInDir.length} file(s)...`)
 
         mdFiles = await fileNamesInDir.reduce(async (validFilesPromise: Promise<File[]>, fileName: string) => {
             const validFiles = await validFilesPromise
 
             if (extname(fileName) != '.md') return validFiles
 
-            const fileData = await promises.readFile(`${folderPath}/${fileName}`)
+            const filePath = isPathADirectory ? `${path}/${fileName}` : path
+            const fileData = await promises.readFile(filePath)
             validFiles.push({ fileName: basename(fileName, '.md'), data: fileData.toString() })
-        
+
             return validFiles
         }, Promise.resolve([]))
     } catch (err) {
-        console.log(`Shuji: error retrieving files from '${folderPath}': ${err}`)
+        console.log(`Shuji: error retrieving file(s) from '${path}': ${err}`)
     }
 
     return mdFiles

@@ -1,4 +1,5 @@
-import { compileMarkdown, defaultOptions } from '.'
+import { getMdFilesFromFolder } from './fileProcessor'
+import { transformMarkdownFiles, transformMarkdownString, defaultOptions } from '.'
 import { existsSync } from 'fs'
 import { promises } from 'fs'
 
@@ -9,22 +10,33 @@ const testData = {
     testReactContextVarName :'testObject'
 }
 
-describe('compile', () => {
-    test('works', async () => {
-        const result = await compileMarkdown({ inputFolderPath: testData.testInputFolder })
+describe('transformMarkdownFiles', () => {
+    test('works with a folder and multiple files', async () => {
+        const result = await transformMarkdownFiles({ inputPath: testData.testInputFolder })
 
         expect(result).toEqual(0)
 
-        expect(existsSync(defaultOptions.outputFolderPath)).toBeTruthy()
-        expect(existsSync(`${defaultOptions.outputFolderPath}/codeexample.jsx`)).toBeTruthy()
-        expect(existsSync(`${defaultOptions.outputFolderPath}/simple.jsx`)).toBeTruthy()
-        expect(existsSync(`${defaultOptions.outputFolderPath}/frontmatterexample.jsx`)).toBeTruthy()
+        expect(existsSync(defaultOptions.outputPath)).toBeTruthy()
+        expect(existsSync(`${defaultOptions.outputPath}/codeexample.jsx`)).toBeTruthy()
+        expect(existsSync(`${defaultOptions.outputPath}/simple.jsx`)).toBeTruthy()
+        expect(existsSync(`${defaultOptions.outputPath}/frontmatterexample.jsx`)).toBeTruthy()
 
-        await cleanup(defaultOptions.outputFolderPath)
+        await cleanup(defaultOptions.outputPath)
+    })
+
+    test('works with a single file path', async () => {
+        const result = await transformMarkdownFiles({ inputPath: `${testData.testInputFolder}/simple.md` })
+
+        expect(result).toEqual(0)
+
+        expect(existsSync(defaultOptions.outputPath)).toBeTruthy()
+        expect(existsSync(`${defaultOptions.outputPath}/simple.jsx`)).toBeTruthy()
+
+        await cleanup(defaultOptions.outputPath)
     })
 
     test('output folder can be changed', async () => {
-        const result = await compileMarkdown({ inputFolderPath: testData.testInputFolder, outputFolderPath: testData.testOutputFolder })
+        const result = await transformMarkdownFiles({ inputPath: testData.testInputFolder, outputPath: testData.testOutputFolder })
 
         expect(result).toEqual(0)
 
@@ -37,43 +49,53 @@ describe('compile', () => {
     })
 })
 
+describe('transformMarkdownString', () => {
+    test('works', async () => {
+        const mdFiles = await getMdFilesFromFolder(testData.testInputFolder)
+        const firstFile = mdFiles[0]
+
+        const result = await transformMarkdownString(firstFile.data, firstFile.fileName)
+
+        expect(result).not.toBeNull()
+    })
+})
+
 describe('front matter tests', () => {
     test('react context can be changed', async () => {
-
-        const result = await compileMarkdown({ inputFolderPath: testData.testInputFolder, reactContextName: testData.testReactContextName })
+        const result = await transformMarkdownFiles({ inputPath: testData.testInputFolder, reactContextName: testData.testReactContextName })
 
         expect(result).toEqual(0)
 
-        expect(existsSync(defaultOptions.outputFolderPath)).toBeTruthy()
-        expect(existsSync(`${defaultOptions.outputFolderPath}/frontmatterexample.jsx`)).toBeTruthy()
-        expect(existsSync(`${defaultOptions.outputFolderPath}/frontmatterexample.jsx`)).toBeTruthy()
+        expect(existsSync(defaultOptions.outputPath)).toBeTruthy()
+        expect(existsSync(`${defaultOptions.outputPath}/frontmatterexample.jsx`)).toBeTruthy()
+        expect(existsSync(`${defaultOptions.outputPath}/frontmatterexample.jsx`)).toBeTruthy()
 
-        const fileWithFrontMatter = await promises.readFile(`${defaultOptions.outputFolderPath}/frontmatterexample.jsx`)
+        const fileWithFrontMatter = await promises.readFile(`${defaultOptions.outputPath}/frontmatterexample.jsx`)
 
         expect(fileWithFrontMatter.length).toBeGreaterThan(1)
         expect(fileWithFrontMatter.toString()).toContain(testData.testReactContextName)
 
-        await cleanup(defaultOptions.outputFolderPath)
+        await cleanup(defaultOptions.outputPath)
     })
 
     test('react context variable is properly set', async () => {
 
-        const result = await compileMarkdown({ inputFolderPath: testData.testInputFolder, reactContextName: testData.testReactContextName, reactContextVarName: testData.testReactContextVarName })
+        const result = await transformMarkdownFiles({ inputPath: testData.testInputFolder, reactContextName: testData.testReactContextName, reactContextVarName: testData.testReactContextVarName })
 
         expect(result).toEqual(0)
 
-        expect(existsSync(defaultOptions.outputFolderPath)).toBeTruthy()
-        expect(existsSync(`${defaultOptions.outputFolderPath}/frontmatterexample.jsx`)).toBeTruthy()
-        expect(existsSync(`${defaultOptions.outputFolderPath}/frontmatterexample.jsx`)).toBeTruthy()
+        expect(existsSync(defaultOptions.outputPath)).toBeTruthy()
+        expect(existsSync(`${defaultOptions.outputPath}/frontmatterexample.jsx`)).toBeTruthy()
+        expect(existsSync(`${defaultOptions.outputPath}/frontmatterexample.jsx`)).toBeTruthy()
 
-        const fileWithFrontMatter = await promises.readFile(`${defaultOptions.outputFolderPath}/frontmatterexample.jsx`)
+        const fileWithFrontMatter = await promises.readFile(`${defaultOptions.outputPath}/frontmatterexample.jsx`)
 
         expect(fileWithFrontMatter.length).toBeGreaterThan(1)
         expect(fileWithFrontMatter.toString()).toContain(testData.testReactContextName)
         const varNameWithCapitalLetter = testData.testReactContextVarName.replace(/^\w/, c => c.toUpperCase())
         expect(fileWithFrontMatter.toString()).toContain(`[${testData.testReactContextVarName}, set${varNameWithCapitalLetter}]`)
 
-        await cleanup(defaultOptions.outputFolderPath)
+        await cleanup(defaultOptions.outputPath)
     })
 })
 

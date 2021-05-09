@@ -42,20 +42,18 @@ export const convertMarkdownFilesToJSXFiles = async (markdownFiles: File[], reac
 /**
  * Converts Markdown to JSX, including any html in the markdown.
  * Also, front-matter will be extracted in js variables in the react component.
- * @param {string[]} `markdownStrings` Markdown strings to convert that may also include front-matter and html.
- * @param {string} `outputFolderPath` Front matter to stringify.
+ * @param {string} `markdownString` Markdown string to convert to a react component that may also include front-matter and html.
+ * @param {componentName} `componentName` Name of new react component.
  * @param {string} `reactContextVarName` name of react context variable name to assign front-matter variables to. like [shuji, setShuji] = useContext(...)
  * @param {string} `reactContextName` name of react context object to assign front-matter variables to.
- * @return {Promise<FrontMatterAndJSX>} Front matter and Markdown JSX strings
+ * @return {Promise<string>} Front matter and Markdown JSX strings
  */
-export const convertMarkdownToJSX = async (markdownString: string, reactContextVarName: string, reactContextName: string): Promise<FrontMatterAndJSX> => {
+export const convertMarkdownToJSX = async (markdownString: string, componentName: string, reactContextVarName: string, reactContextName: string): Promise<string> => {
     const frontMatterAndMarkdown = extractFrontMatter(markdownString, reactContextVarName, reactContextName)
     const jsxString = convertMarkdownAndHtmlToJsx(frontMatterAndMarkdown.markdownString)
+    const reactComponentString = createJsxComponentString(componentName, jsxString, frontMatterAndMarkdown.frontMatterJsxString)
 
-    return {
-        frontMatterJsxString: frontMatterAndMarkdown.frontMatterJsxString,
-        jsxString: jsxString
-    }
+    return reactComponentString
 }
 
 const convertMarkdownAndHtmlToJsx = (markdownString: string): string => {
