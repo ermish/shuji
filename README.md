@@ -30,38 +30,7 @@ I got tired of waiting for bug-fixes, library updates, and having to work around
 
 ## Getting started
 
-### Directly importing the library
-
-Install Shuji
-
-```terminal
-yarn add --dev shuji
-or
-npm install --dev shuji
-```
-
-Import the shuji `compile` method.
-
-```js
-import { compileMarkdown } from 'shuji'
-```
-
-Call the async method `compileMarkdown` which takes an `options` object and returns a `0` upon success or a `1` if there's an error.
-
-Check out all the [properties](##Config-Options)
-
-```js
-const shujiOptions = {
-    inputFolderPath: 'blogArticles',
-    outputFolderPath: 'compiledArticles'
-}
-
-const isSuccessful = await compileMarkdown(shujiOptions)
-```
-
-&nbsp;
-
-### Using Parcel
+### Option 1: Use the [Parcel](https://parceljs.org/) plugin
 
 Install the parcel plugin
 
@@ -79,9 +48,57 @@ See options [below](##Config-Options)
 
 &nbsp;
 
-### Using Webpack
+### Option 2: Use the [Webpack](https://webpack.js.org/) plugin
 
 ...coming soon~
+
+&nbsp;
+
+### Option 3: Directly import the [package](https://www.npmjs.com/package/@ermish/shuji)
+
+#### Install Shuji
+
+```terminal
+yarn add --dev shuji
+or
+npm install --dev shuji
+```
+
+### Transform all .md files in a directory
+
+Import and call the async method `transformMarkdownFiles` which takes an `options` object and returns a `0` upon success or a `1` if there's an error.
+
+```js
+import { transformMarkdownFiles } from 'shuji'
+
+const shujiOptions = {
+    inputPath: 'blogArticles',
+    outputPath: 'compiledArticles'
+}
+
+const isSuccessful = await transformMarkdownFiles(shujiOptions)
+```
+
+### Transform a markdown string
+
+Call the async method `transformMarkdownFiles` which takes an `options` object and returns a react component `string` upon success or an `''` string if there's an error.
+
+```js
+import { transformMarkdownString } from 'shuji'
+
+const myMarkdownString = getMyString()
+
+const shujiOptions = {
+    inputPath: 'blogArticles',
+    outputPath: 'compiledArticles'
+}
+
+const jsxString = await transformMarkdownString(myMarkdownString, shujiOptions)
+```
+
+Check out the [properties](##Config-Options) of the `options` object.
+
+&nbsp;
 
 &nbsp;
 
@@ -198,9 +215,9 @@ export const Frontmatterexample = () => {
 
 ## Config Options
 
-*   `inputFolderPath` (`string`, default: `'markdown'`)\
-    Target Folder with `.md` files for Shuji to parse.
-*   `outputFolderPath` (`string`, default: `'jsxMarkdown'`)\
+*   `inputPath` (`string`, default: `'markdown'`)\
+    Target folder or file with `.md` files for Shuji to parse.
+*   `outputPath` (`string`, default: `'jsxMarkdown'`)\
     Output destination folder to write the compiled `.jsx` files.
 *   `reactContextName` (`string`, default: `'ShujiContext'`)\
     The react context name in which any detected front-matter will be set through `useContext('${reactContextName}')`
