@@ -30,31 +30,34 @@ I got tired of waiting for bug-fixes, library updates, and having to work around
 
 ## Getting started
 
-### Option 1: Use the [Parcel](https://parceljs.org/) plugin
 
-Install the parcel plugin
+### **Option 1**: Use the shuji CLI
+
+#### Install Shuji
 
 ```terminal
-yarn add --dev parcel-plugin-shuji
+yarn add --dev shuji
 or
-npm install --dev parcel-plugin-shuji
+npm install --dev shuji
 ```
 
-Parcel will automatically look for `.md` files in the `./markdown` folder and compile them into the `./jsxMarkdown` folder.
+### Create a yarn/npm script in your `package.json` to run shuji
+package.json:
+```json
+{
+    "scripts": {
+        "buildjsx": "shuji -h"
+    }
+}
+```
 
-You can configure several options by adding a `shuji.config.json` or `.shujirc.json` file in your **root directory** and parcel will automatically load it.
+Alternatively, you can install shuji globally if you prefer not using yarn/npm `scripts`
 
-See options [below](##Config-Options)
+### Run the `-h` help command to see [options](##Config-Options)
 
 &nbsp;
 
-### Option 2: Use the [Webpack](https://webpack.js.org/) plugin
-
-...coming soon~
-
-&nbsp;
-
-### Option 3: Directly import the [package](https://www.npmjs.com/package/@ermish/shuji)
+### **Option 2**: Directly import the [package](https://www.npmjs.com/package/@ermish/shuji)
 
 #### Install Shuji
 
@@ -99,6 +102,30 @@ const jsxString = await transformMarkdownString(myMarkdownString, shujiOptions)
 Check out the [properties](##Config-Options) of the `options` object.
 
 &nbsp;
+
+### **Option 3**: Use the [Parcel](https://parceljs.org/) plugin
+
+#### Edit: Parcel plugin is currently unavailable
+
+Install the parcel plugin
+
+```terminal
+yarn add --dev parcel-plugin-shuji
+or
+npm install --dev parcel-plugin-shuji
+```
+
+Parcel will automatically look for `.md` files in the `./markdown` folder and compile them into the `./jsxMarkdown` folder.
+
+You can configure several options by adding a `shuji.config.json` or `.shujirc.json` file in your **root directory** and parcel will automatically load it.
+
+See options [below](##Config-Options)
+
+&nbsp;
+
+### **Option 4**: Use the [Webpack](https://webpack.js.org/) plugin
+
+...coming soon~
 
 &nbsp;
 
@@ -231,4 +258,7 @@ export const Frontmatterexample = () => {
 
 ## Future features
 
+* Improve docs for cli
+* Fix parcel plugin
 * Webpack support
+* Improve logging

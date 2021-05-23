@@ -4,6 +4,8 @@ import ReactMarkdown from 'react-markdown'
 import matter from 'gray-matter'
 import { stringify } from 'json5'
 
+import { logger } from './logger'
+
 interface File {
     fileName: string
     data: string
@@ -62,7 +64,7 @@ const convertMarkdownAndHtmlToJsx = (markdownString: string): string => {
         const jsxStringWithTabs = jsxString.replace(/(\n|\r)/g, c => c + '\t\t\t')
         return jsxStringWithTabs
     } catch (error) {
-        console.log(`error converting markdown to jsx: ${error}`)
+        logger().error(`error converting markdown to jsx: ${error}`)
         throw new error()
     }
 }
@@ -77,7 +79,7 @@ const extractFrontMatter = (stringWithFrontMatter: string, reactContextVarName: 
             markdownString: content
         }
     } catch (error) {
-        console.log(`failed to extract front matter: ${error}`)
+        logger().error(`failed to extract front matter: ${error}`)
         throw new error()
     }
 }

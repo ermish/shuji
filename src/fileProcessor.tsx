@@ -1,6 +1,8 @@
 import { promises } from 'fs'
 import { extname, basename } from 'path'
 
+import { logger } from './logger'
+
 type File = {
     fileName: string
     data: string
@@ -18,11 +20,11 @@ export const getMdFilesFromFolder = async (path: string): Promise<File[]> => {
             : [basename(path)]
 
         if (fileNamesInDir.length < 1) {
-            console.log(`Shuji: No .md file(s) found in '${path}'`)
+            logger().warn(`No .md file(s) found in '${path}'`)
             return mdFiles
         }
 
-        console.log(`Shuji: Processing ${fileNamesInDir.length} file(s)...`)
+        logger().info(`Processing ${fileNamesInDir.length} file(s)...`)
 
         mdFiles = await fileNamesInDir.reduce(async (validFilesPromise: Promise<File[]>, fileName: string) => {
             const validFiles = await validFilesPromise
@@ -36,7 +38,7 @@ export const getMdFilesFromFolder = async (path: string): Promise<File[]> => {
             return validFiles
         }, Promise.resolve([]))
     } catch (err) {
-        console.log(`Shuji: error retrieving file(s) from '${path}': ${err}`)
+        logger().warn(`No files found in inputPath: '${path}'`)
     }
 
     return mdFiles
@@ -44,6 +46,9 @@ export const getMdFilesFromFolder = async (path: string): Promise<File[]> => {
 
 export const writeJsxFiles = async (folderPath: string, jsxFiles: File[], deleteExistingOutputFolder: boolean): Promise<void> => {
     try {
+        if(jsxFiles.length <= 0)
+            return
+
         if(deleteExistingOutputFolder)
             await promises.rmdir(folderPath)
 
@@ -54,6 +59,6 @@ export const writeJsxFiles = async (folderPath: string, jsxFiles: File[], delete
             })
         )
     } catch (error) {
-        console.log(`Shuji: error writing markdown files: ${error}`)
+        logger().error(`error writing markdown files: ${error}`)
     }
 }

@@ -1,7 +1,7 @@
 import { convertMarkdownFilesToJSXFiles, convertMarkdownToJSX } from './converter'
 import { getMdFilesFromFolder, writeJsxFiles } from './fileProcessor'
 
-interface Options {
+export interface Options {
     inputPath?: string
     outputPath?: string
     reactContextName?: string
