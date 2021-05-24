@@ -5,7 +5,7 @@ import { readFileSync } from 'fs'
 
 import { version } from '../package.json'
 import { transformMarkdownFiles, defaultOptions, Options } from './index'
-import { logger, setIsDebugMode } from './logger'
+import { logger, setLogLevel } from './logger'
 
 const handleArgs = (cliArgs: string[]) : any => {
     const yargsObject = yargs(cliArgs)
@@ -29,10 +29,12 @@ const handleArgs = (cliArgs: string[]) : any => {
             ['$0 --inputPath=./src/markdown/ --outputPath=./src/jsxPages/ --config=./.shujirc.json', 'Full example']
         ])
         //Debug Mode
-        .option('debug', {
-            alias: 'd',
-            describe: 'Enable debug mode. (enhanced logging only used for debugging errors)',
-            type: 'boolean',
+        .option('logLevel', {
+            alias: 'l',
+            choices: [1,2,3],
+            describe: 'Set the log level. 1=debug mode, 2=default, 3= no logs',
+            default: 2,
+            type: 'number',
         })
         //Shuji Options
         .group(['inputPath', 'outputPath', 'reactContextName', 'reactContextVarName', 'deleteExistingOutputFolder'], 'Config Parameters:')
@@ -64,7 +66,7 @@ const handleArgs = (cliArgs: string[]) : any => {
         .argv
 
     //Enable debugger logging ASAP
-    setIsDebugMode(yargsObject['debug'] as boolean)
+    setLogLevel(yargsObject['logLevel'] as number)
 
     logger().debug(`cli args: ${JSON.stringify(yargsObject)}`)
 
@@ -93,9 +95,6 @@ export const cli = async (args: string[]) => {
         const userOptions = convertYargsToShujiOptions(yargs)
 
         await transformMarkdownFiles(userOptions)
-
-        logger().debug(`done!`)
-
     } catch (err) {
         logger().error(`An unknown error occurred! Try using a markdown validator to ensure your mardown files are valid`, err)
     }

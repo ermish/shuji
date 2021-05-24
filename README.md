@@ -242,6 +242,8 @@ export const Frontmatterexample = () => {
 
 ## Config Options
 
+By default, no options are required.
+
 *   `inputPath` (`string`, default: `'markdown'`)\
     Target folder or file with `.md` files for Shuji to parse.
 *   `outputPath` (`string`, default: `'jsxMarkdown'`)\
@@ -253,6 +255,8 @@ export const Frontmatterexample = () => {
     __note__: first letter will be automatically be lower case for the object and upper-cased for the set method
 *   `deleteExistingOutputFolder` (`boolean`, default: `false`)\
     Delete existing content in the output folder (`outputFolderPath`) before writing compiled files
+*   `logLevel` (`number`, default: `2`)\
+    Set the log level. `1`=debug mode, `2`=default, `3`= no logs
 
 &nbsp;
 

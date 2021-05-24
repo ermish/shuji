@@ -1,6 +1,9 @@
 import { convertMarkdownFilesToJSXFiles, convertMarkdownToJSX } from './converter'
 import { getMdFilesFromFolder, writeJsxFiles } from './fileProcessor'
 
+const { performance, PerformanceObserver, PerformanceEntry  } = require("perf_hooks")
+import { logger } from './logger'
+
 export interface Options {
     inputPath?: string
     outputPath?: string
@@ -17,6 +20,22 @@ export const defaultOptions = {
     deleteExistingOutputFolder: false
 }
 
+//TODO: use typescript types
+const perfObserver = new PerformanceObserver((items:any) => {
+    items.getEntries().forEach((entry:any ) => {
+        const trimmedDuration = parseInt(entry.duration)
+        if(entry.name == 'shuji') {
+            logger().info(`Done in ${trimmedDuration}ms.`)
+            return
+        }
+
+        logger().debug(`${entry.name} finished in ${trimmedDuration}ms.`)
+    })
+})
+
+perfObserver.observe({ entryTypes: ["measure"], buffer: true })
+
+
 /**
  * Transforms a Markdown string to JSX, including any html in the markdown.
  * Also, front-matter will be extracted in js variables in the react component.
@@ -27,6 +46,8 @@ export const defaultOptions = {
  */
  export const transformMarkdownString = async (markdownString: string, componentName: string, options?: Options): Promise<string> => {
     try {
+        performance.mark('start-shuji')
+
         const userOptions = {
             ...defaultOptions,
             ...options
@@ -37,6 +58,9 @@ export const defaultOptions = {
         return jsxString
     } catch (error) {
         return ''
+    } finally {
+        performance.mark('end-shuji')
+        performance.measure('shuji', 'start-shuji', 'end-shuji')
     }
 }
 
@@ -49,6 +73,8 @@ export const defaultOptions = {
  */
 export const transformMarkdownFiles = async (options?: Options): Promise<number> => {
     try {
+        performance.mark('start-shuji')
+
         const userOptions = {
             ...defaultOptions,
             ...options
@@ -61,5 +87,8 @@ export const transformMarkdownFiles = async (options?: Options): Promise<number>
         return 0
     } catch (error) {
         return 1
+    } finally {
+        performance.mark('end-shuji')
+        performance.measure('shuji', 'start-shuji', 'end-shuji')
     }
 }

@@ -20,11 +20,11 @@ export const getMdFilesFromFolder = async (path: string): Promise<File[]> => {
             : [basename(path)]
 
         if (fileNamesInDir.length < 1) {
-            logger().warn(`No .md file(s) found in '${path}'`)
+            logger().warn(`No .md files found in '${path}'`)
             return mdFiles
         }
 
-        logger().info(`Processing ${fileNamesInDir.length} file(s)...`)
+        logger().info(`Processing ${fileNamesInDir.length} file${fileNamesInDir.length > 1 ? 's' : ''} from "${path}"...`)
 
         mdFiles = await fileNamesInDir.reduce(async (validFilesPromise: Promise<File[]>, fileName: string) => {
             const validFiles = await validFilesPromise
@@ -38,7 +38,7 @@ export const getMdFilesFromFolder = async (path: string): Promise<File[]> => {
             return validFiles
         }, Promise.resolve([]))
     } catch (err) {
-        logger().warn(`No files found in inputPath: '${path}'`)
+        logger().warn(`No .md files found in inputPath: '${path}'`)
     }
 
     return mdFiles
@@ -51,6 +51,9 @@ export const writeJsxFiles = async (folderPath: string, jsxFiles: File[], delete
 
         if(deleteExistingOutputFolder)
             await promises.rmdir(folderPath)
+
+        logger().info(`Generating ${jsxFiles.length} file${jsxFiles.length > 1 ? 's' : ''} in "${folderPath}"...`)
+
 
         await promises.mkdir(folderPath, { recursive: true })
         await Promise.all(
