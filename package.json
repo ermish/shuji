@@ -34,7 +34,7 @@
     },
     "scripts": {
         "build": "yarn && parcel build ./src/index.ts ./src/cli.ts --dist-dir dist",
-        "start": "node ./dist/cli.js -i='./src/samples'",
+        "start": "node ./dist/cli.js -i='./src/samples' --useReactHelmet=false",
         "lint": "eslint ./src/**.js",
         "test": "jest --verbose",
         "cli": ""
@@ -54,7 +54,7 @@
         "@babel/preset-env": "^7.12.11",
         "@babel/preset-react": "^7.13.13",
         "@babel/preset-typescript": "^7.13.0",
-        "@tsconfig/node16": "^1.0.0",
+        "@tsconfig/node16": "^1.0.1",
         "@types/fs-extra": "^9.0.11",
         "@types/jest": "^26.0.20",
         "@types/json5": "^2.2.0",

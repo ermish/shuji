@@ -48,12 +48,17 @@ const handleArgs = (cliArgs: string[]) : any => {
             describe: 'Output destination folder to write the compiled .jsx files',
             type: 'string',
         })
-        .option('reactContextName', {
+        .option('useReactHelmet', {
+            alias: 'rh',
+            describe: 'Toggle output style of front matter. true uses react helmet syntax. false will set react context values you have more control over. This is referred to as "reactHead"',
+            type: 'boolean',
+        })
+        .option('reactHeadContextName', {
             alias: 'rc',
             describe: "The react context name in which any detected front-matter will be set through useContext('${reactContextName}')",
             type: 'string',
         })
-        .option('reactContextVarName', {
+        .option('reactHeadContextVarName', {
             alias: 'rcv',
             describe: "The name of the react context object and set method assigned from useContext('${reactContextName}'). ex. const [${yourVar}, set${YourVar}]",
             type: 'string',

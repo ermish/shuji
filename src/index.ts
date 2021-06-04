@@ -7,16 +7,18 @@ import { logger } from './logger'
 export interface Options {
     inputPath?: string
     outputPath?: string
-    reactContextName?: string
-    reactContextVarName?: string
+    useReactHelmet?: boolean, 
+    reactHeadContextName?: string
+    reactHeadContextVarName?: string
     deleteExistingOutputFolder?: boolean
 }
 
 export const defaultOptions = {
     inputPath: 'markdown',
     outputPath: 'jsxMarkdown',
-    reactContextName: 'ShujiContext',
-    reactContextVarName: 'shuji',
+    useReactHelmet: true, 
+    reactHeadContextName: 'ReactHeadContext',
+    reactHeadContextVarName: 'reactHead',
     deleteExistingOutputFolder: false
 }
 
@@ -53,7 +55,7 @@ perfObserver.observe({ entryTypes: ["measure"], buffer: true })
             ...options
         }
 
-        const jsxString = await convertMarkdownToJSX(markdownString, componentName, userOptions.reactContextVarName, userOptions.reactContextName)
+        const jsxString = await convertMarkdownToJSX(markdownString, componentName, userOptions.useReactHelmet, userOptions.reactHeadContextVarName, userOptions.reactHeadContextName)
 
         return jsxString
     } catch (error) {
@@ -81,7 +83,7 @@ export const transformMarkdownFiles = async (options?: Options): Promise<number>
         }
 
         const mdFiles = await getMdFilesFromFolder(userOptions.inputPath)
-        const jsxStrings = await convertMarkdownFilesToJSXFiles(mdFiles, userOptions.reactContextVarName, userOptions.reactContextName)
+        const jsxStrings = await convertMarkdownFilesToJSXFiles(mdFiles, userOptions.useReactHelmet, userOptions.reactHeadContextVarName, userOptions.reactHeadContextName)
         await writeJsxFiles(userOptions.outputPath, jsxStrings, userOptions.deleteExistingOutputFolder)
 
         return 0
