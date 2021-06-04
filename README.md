@@ -234,7 +234,7 @@ export const Frontmatterexample = () => {
 }
 ```
 
-If you set `useReactHelmet=false` enabling the reactHead format, it will look like this:
+If you set `useReactHelmet=false` enabling the reactHead format, it will output your front-matter using a react context like this:
 
 ```js
 import { ReactHeadContext } from 'reactHead'
@@ -284,7 +284,7 @@ By default, no options are required.
     Target folder or file with `.md` files for Shuji to parse.
 *   `outputPath` (`string`, default: `'jsxMarkdown'`)\
     Output destination folder to write the compiled `.jsx` files.
-	`useReactHelmet` (`boolean`, default: `true`)\
+*	`useReactHelmet` (`boolean`, default: `true`)\
     Toggle output style of front matter. true uses react helmet syntax. false will set react context values you have more control over. This is referred to as "reactHead"
 *   `reactHeadContextName` (`string`, default: `'ReactHeadContext'`)\
     The reactHead context name in which any detected front-matter will be set through `useContext('${reactContextName}')`
