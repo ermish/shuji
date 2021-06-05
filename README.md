@@ -241,25 +241,21 @@ Node react stuffs
 output: `jsxPages/frontmatterexample.jsx`
 
 ```js
-export const Frontmatterexample = () => {
+import { Helmet } from 'react-helmet'
 
-	const [shuji, setShuji] = useContext('ShujiContext')
-
-	setShuji({
-		...testObject,
-		date = '2021-01-01',
-		title = 'node with react and redux',
-		slug = 'node-react-redux',
-		description = 'How to node with react and redux',
-		tags = ['node','react','redux'],
-	})
-
+export const Frontmatterexample = () => { 
+  
     return (
         <div className='frontmatterexample'>
-            <h1>Node with react redux</h1>
+        	<Helmet>		
+				<meta name="date" content="2021-01-01" />
+				<title>node with react and redux</title>
+				<meta name="slug" content="node-react-redux" />
+				<meta name="description" content="How to node with react and redux" />
+				<meta name="tags" content="node,react,redux" />
+			</Helmet>	<h1>Node with react redux</h1>
 			<h2>test</h2>
 			<p>This with a test with yaml front matter.
-
 			Node react stuffs</p>
 			<h3>Reasons to use this</h3>
 			<ul>
@@ -273,6 +269,46 @@ export const Frontmatterexample = () => {
 }
 ```
 
+If you set `useReactHelmet=false` enabling the reactHead format, it will output your front-matter using a react context like this:
+
+```js
+import { ReactHeadContext } from 'reactHead'
+
+export const Frontmatterexample = () => { 
+  
+	const [reactHead, setReactHead] = useContext('ReactHeadContext')
+
+	setReactHead({
+		...reactHead,
+		date = '2021-01-01', 
+		title = 'node with react and redux', 
+		slug = 'node-react-redux', 
+		description = 'How to node with react and redux', 
+		tags = ['node','react','redux'], 
+
+	})
+
+    return (
+        <div className='frontmatterexample'>
+        	<h1>Node with react redux</h1>
+			<h2>test</h2>
+			<p>This with a test with yaml front matter.
+			Node react stuffs</p>
+			<h3>Reasons to use this</h3>
+			<ul>
+			<li>It&#x27;s awesome</li>
+			<li>It&#x27;s lightweight</li>
+			<li>It doesn&#x27;t replace your build pipeline.</li>
+			</ul>
+			<h4>The end</h4>
+        </div>
+    )
+}
+```
+
+Note: you will need to set up a custom module alias if your imported `reactHead` context is in another folder level.
+You can add this to your `tsconfig.json` or `jsconfig.json`
+
 &nbsp;
 
 ## Config Options
@@ -283,10 +319,12 @@ By default, no options are required.
     Target folder or file with `.md` files for Shuji to parse.
 *   `outputPath` (`string`, default: `'jsxMarkdown'`)\
     Output destination folder to write the compiled `.jsx` files.
-*   `reactContextName` (`string`, default: `'ShujiContext'`)\
-    The react context name in which any detected front-matter will be set through `useContext('${reactContextName}')`
-*   `reactContextVarName` (`string`, default: `'shuji'`)\
-    The name of the react context object and set method assigned from `useContext('${reactContextName}')`. ex. `const [${yourVar}, set${YourVar}]`.\
+*	`useReactHelmet` (`boolean`, default: `true`)\
+    Toggle output style of front matter. true uses react helmet syntax. false will set react context values you have more control over. This is referred to as "reactHead"
+*   `reactHeadContextName` (`string`, default: `'ReactHeadContext'`)\
+    The reactHead context name in which any detected front-matter will be set through `useContext('${reactContextName}')`
+*   `reactHeadContextVarName` (`string`, default: `'reactHead'`)\
+    The name of the reactHead context object and set method assigned from `useContext('${reactContextName}')`. ex. `const [${yourVar}, set${YourVar}]`.\
     __note__: first letter will be automatically be lower case for the object and upper-cased for the set method
 *   `deleteExistingOutputFolder` (`boolean`, default: `false`)\
     Delete existing content in the output folder (`outputFolderPath`) before writing compiled files

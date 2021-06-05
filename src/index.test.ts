@@ -62,7 +62,7 @@ describe('transformMarkdownString', () => {
 
 describe('front matter tests', () => {
     test('react context can be changed', async () => {
-        const result = await transformMarkdownFiles({ inputPath: testData.testInputFolder, reactContextName: testData.testReactContextName })
+        const result = await transformMarkdownFiles({ inputPath: testData.testInputFolder, reactHeadContextName: testData.testReactContextName })
 
         expect(result).toEqual(0)
 
@@ -80,7 +80,7 @@ describe('front matter tests', () => {
 
     test('react context variable is properly set', async () => {
 
-        const result = await transformMarkdownFiles({ inputPath: testData.testInputFolder, reactContextName: testData.testReactContextName, reactContextVarName: testData.testReactContextVarName })
+        const result = await transformMarkdownFiles({ inputPath: testData.testInputFolder, reactHeadContextName: testData.testReactContextName, reactHeadContextVarName: testData.testReactContextVarName })
 
         expect(result).toEqual(0)
 

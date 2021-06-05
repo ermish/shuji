@@ -2271,10 +2271,10 @@
   resolved "https://registry.npmjs.org/@swc/helpers/-/helpers-0.2.11.tgz"
   integrity sha512-0FFPZrCwRDLsbJDKzs1Oo+TAqfAyxnZWZoTF6rUrfWQCYpwuKFj7tAEt/wa830fqCPE5Uk6qIo9KMkPe7Qgukg==
 
-"@tsconfig/node16@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@tsconfig/node16/-/node16-1.0.0.tgz"
-  integrity sha512-vO0Ux1o4I1S185cQJ50pICJ69pS3wq2VXJTbZlEs1/F19wFpCsGRRct5lTOyAI0WydHz6QVpR1afTFKMpYVsvg==
+"@tsconfig/node16@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.1.tgz#a6ca6a9a0ff366af433f42f5f0e124794ff6b8f1"
+  integrity sha512-FTgBI767POY/lKNDNbIzgAX6miIDBs6NTCbdlDb8TrWovHsSvaVIZDlTqym29C6UqhzwcJx4CYr+AlrMywA0cA==
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.7":
   version "7.1.12"
