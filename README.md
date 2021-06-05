@@ -6,7 +6,7 @@
 
 &nbsp;
 
-![Shuji Icon](https://github.com/@ermish/shuji/shuji-icon.svg "Shuji Icon")
+![Shuji Icon](https://github.com/Ermish/shuji/blob/main/shuji-icon.svg "Shuji Icon")
 
 >Shuji is a Markdown to React JSX converter!
 >It supports markdown including html, css, js, and even front-matter.
