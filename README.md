@@ -161,11 +161,13 @@ date: 2013/7/13 20:46:25
 ;;;
 ```
 
+See the front-matter [example](###Example-with-front-matter) for the output
+
 &nbsp;
 
 ## Examples
 
-### Basic MarkdownExample
+### Basic Markdown Example
 
 input: `articles/simple.md`
 
@@ -207,7 +209,7 @@ export const Simple = () => {
 
 &nbsp;
 
-### Example with f
+### Example with front-matter
 input: `articles/frontmatterexample.md`
 
 ```markdown
@@ -243,17 +245,18 @@ output: `jsxPages/frontmatterexample.jsx`
 ```js
 import { Helmet } from 'react-helmet'
 
-export const Frontmatterexample = () => { 
-  
+export const Frontmatterexample = () => {
+
     return (
         <div className='frontmatterexample'>
-        	<Helmet>		
+        	<Helmet>
 				<meta name="date" content="2021-01-01" />
 				<title>node with react and redux</title>
 				<meta name="slug" content="node-react-redux" />
 				<meta name="description" content="How to node with react and redux" />
 				<meta name="tags" content="node,react,redux" />
-			</Helmet>	<h1>Node with react redux</h1>
+			</Helmet>
+            <h1>Node with react redux</h1>
 			<h2>test</h2>
 			<p>This with a test with yaml front matter.
 			Node react stuffs</p>
@@ -274,17 +277,17 @@ If you set `useReactHelmet=false` enabling the reactHead format, it will output 
 ```js
 import { ReactHeadContext } from 'reactHead'
 
-export const Frontmatterexample = () => { 
-  
+export const Frontmatterexample = () => {
+
 	const [reactHead, setReactHead] = useContext('ReactHeadContext')
 
 	setReactHead({
 		...reactHead,
-		date = '2021-01-01', 
-		title = 'node with react and redux', 
-		slug = 'node-react-redux', 
-		description = 'How to node with react and redux', 
-		tags = ['node','react','redux'], 
+		date = '2021-01-01',
+		title = 'node with react and redux',
+		slug = 'node-react-redux',
+		description = 'How to node with react and redux',
+		tags = ['node','react','redux'],
 
 	})
 
@@ -335,7 +338,6 @@ By default, no options are required.
 
 ## Future features
 
-* Improve docs for cli
 * Fix parcel plugin
 * Webpack support
 * Improve logging
