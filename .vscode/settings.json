@@ -1,4 +1,3 @@
 {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "prettier.packageManager": "yarn"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

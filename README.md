@@ -1,6 +1,15 @@
 # Shuji
 
-Shuji is a Markdown to React JSX converter!
+![npm package version](https://img.shields.io/npm/v/@ermish/shuji)
+![npm total downloads](https://img.shields.io/npm/dt/@ermish/shuji)
+![license](https://img.shields.io/npm/l/@ermish/shuji)
+
+&nbsp;
+
+![Shuji Icon](https://github.com/@ermish/shuji/shuji-icon.svg "Shuji Icon")
+
+>Shuji is a Markdown to React JSX converter!
+>It supports markdown including html, css, js, and even front-matter.
 
 &nbsp;
 
@@ -23,12 +32,12 @@ I got tired of waiting for bug-fixes, library updates, and having to work around
 ## How it works
 
 * It will convert `.md` files that you provide, generate a file with an exported react component.
-  * front-matter is converted to a react context object.
+  * front-matter is converted to either react helmet or react context object format. See more [below](##Config-Options)
   * The actual markdown content will be converted to JSX.
 
 &nbsp;
 
-## Getting started
+## Getting started - Installation
 
 
 ### **Option 1**: Use the shuji CLI
@@ -129,7 +138,34 @@ See options [below](##Config-Options)
 
 &nbsp;
 
+## Front Matter - How does it work in Shuji?
+
+#### What is front matter?
+Front matter itself is a convention borrowed from books describing the title, contents, etc.
+In code it represents the meta data around an article like title, date, author, description, etc.
+
+#### Usage
+Front matter can be written in `YAML` or `JSON` format at the beginning of each markdown file
+Here's an example format:
+
+```YAML
+---
+title: Hello World
+date: 2013/7/13 20:46:25
+---
+```
+
+```JSON
+"title": "Hello World",
+"date": "2013/7/13 20:46:25"
+;;;
+```
+
+&nbsp;
+
 ## Examples
+
+### Basic MarkdownExample
 
 input: `articles/simple.md`
 
@@ -171,8 +207,7 @@ export const Simple = () => {
 
 &nbsp;
 
-### Example with front matter
-
+### Example with f
 input: `articles/frontmatterexample.md`
 
 ```markdown
@@ -266,3 +301,9 @@ By default, no options are required.
 * Fix parcel plugin
 * Webpack support
 * Improve logging
+
+&nbsp;
+
+## License
+
+MIT
