@@ -37,7 +37,7 @@ const handleArgs = (cliArgs: string[]) : any => {
             type: 'number',
         })
         //Shuji Options
-        .group(['inputPath', 'outputPath', 'useReactHelmet', 'reactHeadContextName', 'reactHeadContextVarName', 'deleteExistingOutputFolder'], 'Config Parameters:')
+        .group(['inputPath', 'outputPath', 'frontMatterMode', 'reactHeadContextName', 'reactHeadContextVarName', 'deleteExistingOutputFolder'], 'Config Parameters:')
         .option('inputPath', {
             alias: 'i',
             describe: 'Target folder or file with .md files for Shuji to parse',
@@ -48,10 +48,11 @@ const handleArgs = (cliArgs: string[]) : any => {
             describe: 'Output destination folder to write the compiled .jsx files',
             type: 'string',
         })
-        .option('useReactHelmet', {
-            alias: 'rh',
-            describe: 'Toggle output style of front matter. true uses react helmet syntax. false will set react context values you have more control over. This is referred to as "reactHead"',
-            type: 'boolean',
+        .option('frontMatterMode', {
+            alias: 'fm',
+            choices: ['reacthelmet','reacthead','none'],
+            describe: 'Toggle output style of front matter. "reacthelmet" uses react helmet syntax. "reactHead" will creat a react context you have more control over. This is referred to as "reactHead"',
+            type: 'string',
         })
         .option('reactHeadContextName', {
             alias: 'rc',

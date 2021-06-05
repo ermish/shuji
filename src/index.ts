@@ -7,7 +7,7 @@ import { logger } from './logger'
 export interface Options {
     inputPath?: string
     outputPath?: string
-    useReactHelmet?: boolean, 
+    frontMatterMode?: string, 
     reactHeadContextName?: string
     reactHeadContextVarName?: string
     deleteExistingOutputFolder?: boolean
@@ -16,7 +16,7 @@ export interface Options {
 export const defaultOptions = {
     inputPath: 'markdown',
     outputPath: 'jsxMarkdown',
-    useReactHelmet: true, 
+    frontMatterMode: 'reacthelmet', 
     reactHeadContextName: 'ReactHeadContext',
     reactHeadContextVarName: 'reactHead',
     deleteExistingOutputFolder: false
@@ -52,10 +52,11 @@ perfObserver.observe({ entryTypes: ["measure"], buffer: true })
 
         const userOptions = {
             ...defaultOptions,
-            ...options
+            ...options,
+            frontMatterMode: options?.frontMatterMode?.toLowerCase() ?? defaultOptions.frontMatterMode
         }
 
-        const jsxString = await convertMarkdownToJSX(markdownString, componentName, userOptions.useReactHelmet, userOptions.reactHeadContextVarName, userOptions.reactHeadContextName)
+        const jsxString = await convertMarkdownToJSX(markdownString, componentName, userOptions.frontMatterMode, userOptions.reactHeadContextVarName, userOptions.reactHeadContextName)
 
         return jsxString
     } catch (error) {
@@ -79,11 +80,12 @@ export const transformMarkdownFiles = async (options?: Options): Promise<number>
 
         const userOptions = {
             ...defaultOptions,
-            ...options
+            ...options,
+            frontMatterMode: options?.frontMatterMode?.toLowerCase() ?? defaultOptions.frontMatterMode
         }
 
         const mdFiles = await getMdFilesFromFolder(userOptions.inputPath)
-        const jsxStrings = await convertMarkdownFilesToJSXFiles(mdFiles, userOptions.useReactHelmet, userOptions.reactHeadContextVarName, userOptions.reactHeadContextName)
+        const jsxStrings = await convertMarkdownFilesToJSXFiles(mdFiles, userOptions.frontMatterMode, userOptions.reactHeadContextVarName, userOptions.reactHeadContextName)
         await writeJsxFiles(userOptions.outputPath, jsxStrings, userOptions.deleteExistingOutputFolder)
 
         return 0

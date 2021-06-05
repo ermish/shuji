@@ -18,6 +18,7 @@ interface FrontMatterAndJSX {
 interface FrontMatterSplitFromMarkdown {
     frontMatterJsxString: string
     markdownString: string
+    componentNameFromFrontMatter?: string
 }
 
 /**
@@ -28,12 +29,12 @@ interface FrontMatterSplitFromMarkdown {
  * @param {string} `reactContextName` name of react context object to assign front-matter variables to.
  * @return {Promise<JsxFiles>} Files containing jsx
  */
-export const convertMarkdownFilesToJSXFiles = async (markdownFiles: File[], useReactHelmet:boolean, reactContextVarName: string, reactContextName: string): Promise<File[]> => {
+export const convertMarkdownFilesToJSXFiles = async (markdownFiles: File[], frontMatterMode:string, reactContextVarName: string, reactContextName: string): Promise<File[]> => {
     const files = await Promise.all(
         markdownFiles.map(async file => {
-            const frontMatterAndMarkdown = extractFrontMatter(file.data, useReactHelmet, reactContextVarName, reactContextName)
+            const frontMatterAndMarkdown = extractFrontMatter(file.data, frontMatterMode, reactContextVarName, reactContextName)
             const jsxString = convertMarkdownAndHtmlToJsx(frontMatterAndMarkdown.markdownString)
-            const reactComponentString = createJsxComponentString(file.fileName, jsxString, useReactHelmet, frontMatterAndMarkdown.frontMatterJsxString, reactContextName)
+            const reactComponentString = createJsxComponentString(frontMatterAndMarkdown.componentNameFromFrontMatter ?? file.fileName, jsxString, frontMatterMode, frontMatterAndMarkdown.frontMatterJsxString, reactContextName)
             return { fileName: file.fileName, data: reactComponentString }
         })
     )
@@ -50,10 +51,10 @@ export const convertMarkdownFilesToJSXFiles = async (markdownFiles: File[], useR
  * @param {string} `reactContextName` name of react context object to assign front-matter variables to.
  * @return {Promise<string>} Front matter and Markdown JSX strings
  */
-export const convertMarkdownToJSX = async (markdownString: string, componentName: string, useReactHelmet:boolean, reactContextVarName: string, reactContextName: string): Promise<string> => {
-    const frontMatterAndMarkdown = extractFrontMatter(markdownString, useReactHelmet, reactContextVarName, reactContextName)
+export const convertMarkdownToJSX = async (markdownString: string, componentName: string, frontMatterMode:string, reactContextVarName: string, reactContextName: string): Promise<string> => {
+    const frontMatterAndMarkdown = extractFrontMatter(markdownString, frontMatterMode, reactContextVarName, reactContextName)
     const jsxString = convertMarkdownAndHtmlToJsx(frontMatterAndMarkdown.markdownString)
-    const reactComponentString = createJsxComponentString(componentName, jsxString, useReactHelmet, frontMatterAndMarkdown.frontMatterJsxString, reactContextName)
+    const reactComponentString = createJsxComponentString(componentName, jsxString, frontMatterMode, frontMatterAndMarkdown.frontMatterJsxString, reactContextName)
 
     return reactComponentString
 }
@@ -69,14 +70,17 @@ const convertMarkdownAndHtmlToJsx = (markdownString: string): string => {
     }
 }
 
-const extractFrontMatter = (stringWithFrontMatter: string, useReactHelment:boolean, reactContextVarName?: string, reactContextName?: string): FrontMatterSplitFromMarkdown => {
+const extractFrontMatter = (stringWithFrontMatter: string, frontMatterMode:string, reactContextVarName?: string, reactContextName?: string): FrontMatterSplitFromMarkdown => {
     try {
         const { data, content } = matter(stringWithFrontMatter)
-        const frontMatterJsxString = createFrontMatterJSXString(data, useReactHelment, reactContextVarName, reactContextName)
+        const frontMatterJsxString = createFrontMatterJSXString(data, frontMatterMode, reactContextVarName, reactContextName)
+
+        const componentNameFromFrontMatter = data['react-component-name']
 
         return {
             frontMatterJsxString: frontMatterJsxString,
-            markdownString: content
+            markdownString: content,
+            componentNameFromFrontMatter
         }
     } catch (error) {
         logger().error(`failed to extract front matter: ${error}`)
@@ -84,26 +88,31 @@ const extractFrontMatter = (stringWithFrontMatter: string, useReactHelment:boole
     }
 }
 
-const createFrontMatterJSXString = (propsToAssign: Object, useReactHelment: boolean, reactContextVarName?: string, reactContextName?: string): string => {
+const createFrontMatterJSXString = (propsToAssign: Object, frontMatterMode: string, reactContextVarName?: string, reactContextName?: string): string => {
     if(Object.keys(propsToAssign).length < 1)
         return ''
 
-    if(useReactHelment == false) {
+    if(frontMatterMode == 'reacthead') {
         return createReactHeadString(propsToAssign, reactContextVarName as string, reactContextName as string)
     }
 
-    return createReactHelmentElements(propsToAssign)
+    if(frontMatterMode == 'reacthelmet') {
+        return createReactHelmentElements(propsToAssign)
+    }
+
+    return ''
+
 }
 
-const createJsxComponentString = (componentName: string, reactString: string, useReactHelmet:boolean, frontmatterString: string, reactContextName?: string): string => {
+const createJsxComponentString = (componentName: string, reactString: string, frontMatterMode:string, frontmatterString: string, reactContextName?: string): string => {
     const capitalizedMethodName = componentName.replace(/^\w/, c => c.toUpperCase())
     const camelCasedComponentName = componentName.replace(/^\w/, c => c.toLowerCase())
 
-    let reactComponent = `${frontmatterString ? useReactHelmet ? `import { Helmet } from 'react-helmet'\n\n` : `import { ${reactContextName} } from 'reactHead'\n\n` : ''}`
-    + `const ${capitalizedMethodName} = () => { \n  ${useReactHelmet ? '' : frontmatterString}
+    let reactComponent = `${frontmatterString ? frontMatterMode == 'reacthelmet' ? `import { Helmet } from 'react-helmet'\n\n` : `import { ${reactContextName} } from 'reactHead'\n\n` : ''}`
+    + `const ${capitalizedMethodName} = () => { \n  ${frontMatterMode == 'reacthelmet' ? '' : frontmatterString}
     return (
         <div className='${camelCasedComponentName}'>
-        ${useReactHelmet ? frontmatterString : ''}\t${reactString}
+        ${frontmatterString && frontMatterMode != 'none' ? `${frontmatterString}\n\t\t` : ''}\t${reactString}
         </div>
     )\n}
     \nexport default ${capitalizedMethodName}`
@@ -137,6 +146,8 @@ const createReactHelmentElements = (propsToAssign: Object) : string => {
             case 'keywords':
                 propAssignmentString += `\n\t\t\t\t<meta name="keywords" content="${propValueStringified}" />`
                 break;
+            case 'react-component-name':
+                break;
             default:
                 propAssignmentString += `\n\t\t\t\t<meta name="${propName}" content="${propValueStringified}" />`
                 break;
@@ -167,16 +178,21 @@ const createReactHeadString = (propsToAssign: Object, reactContextVarName: strin
 	//     tags = ['node','cool','shuji']
     // })
 
-    const setContextVarName = 'set' + reactContextVarName.replace(/^\w/, c => c.toUpperCase())
-    const camelCasedVarName = reactContextVarName.replace(/^\w/, c => c.toLowerCase())
+    const contextVarNameLettersOnly = reactContextVarName.replace(/[^\w]/g, '')
+    const setContextVarName = 'set' + contextVarNameLettersOnly.replace(/^\w/, c => c.toUpperCase())
+    const camelCasedVarName = contextVarNameLettersOnly.replace(/^\w/, c => c.toLowerCase())
 
     let propAssignmentString = ''
 
     for (const propName in propsToAssign) {
         const propValue = propsToAssign[propName as keyof Object]
         let propValueStringified = stringify(propValue)
+        const propNameAlphanumericOnly = propName.replace(/[^\w]/g, '')
 
-        propAssignmentString += `\t\t${propName} = ${propValueStringified}, \n`
+        if(propNameAlphanumericOnly.toLowerCase() === 'reactcomponentname')
+            continue
+
+        propAssignmentString += `\t\t${propNameAlphanumericOnly} = ${propValueStringified}, \n`
     }
 
     const contextAssignmentString =
@@ -184,7 +200,7 @@ const createReactHeadString = (propsToAssign: Object, reactContextVarName: strin
     + `\n\n\t${setContextVarName}({`
         + `\n\t\t...${camelCasedVarName},`
         + `\n${propAssignmentString}`
-    + `\n\t})\n`
+    + `\t})`
 
     return contextAssignmentString
 }

@@ -275,7 +275,7 @@ export const Frontmatterexample = () => {
 }
 ```
 
-If you set `useReactHelmet=false` enabling the reactHead format, it will output your front-matter using a react context like this:
+If you set `frontMatterMode='reactHead'` enabling the reactHead format, it will output your front-matter using a react context like this:
 
 ```js
 import { ReactHeadContext } from 'reactHead'
@@ -325,7 +325,7 @@ By default, no options are required.
     Target folder or file with `.md` files for Shuji to parse.
 *   `outputPath` (`string`, default: `'jsxMarkdown'`)\
     Output destination folder to write the compiled `.jsx` files.
-*	`useReactHelmet` (`boolean`, default: `true`)\
+*	`frontMatterMode` (`string`, default: `reacthelmet`)\
     Toggle output style of front matter. true uses react helmet syntax. false will set react context values you have more control over. This is referred to as "reactHead"
 *   `reactHeadContextName` (`string`, default: `'ReactHeadContext'`)\
     The reactHead context name in which any detected front-matter will be set through `useContext('${reactContextName}')`
@@ -336,6 +336,37 @@ By default, no options are required.
     Delete existing content in the output folder (`outputFolderPath`) before writing compiled files
 *   `logLevel` (`number`, default: `2`)\
     Set the log level. `1`=debug mode, `2`=default, `3`= no logs
+
+&nbsp;
+
+## Front matter options
+
+*   `react-component-name` (`string`)\
+	For setting the react component name. Useful if you want to name your component something different than the filename. Useful if your file names begin with a date. Example: filename: `2030-02-02-shuji-is-awesome.md`, front matter:`react-component-name:shujiIsAwesome` output: `const ShujiIsAwesome = ...`
+*   `title` (`string`)\
+	For replacing the page title `<title>{shuji}</title>`
+*   `description` (`string`)\
+	Description for your post. `<meta name="description" content="{Shuji is awesome!}">`
+*   `keywords` (`string`)\
+	SEO Keywords for your post. `<meta name="keywords" content="{[shuji, react, markdown]}">`
+*   `date` (`string`)\
+	Published Date. No official html5 support tag, so placed in a meta tag `<meta name="date" content="{2030-01-01}">`
+*   `tags` (`array`)\
+	Tags to categorize your post. No official html5 support tag, so placed in a meta tag `<meta name="tags" content="{[shuji, react, markdown]}">`
+*   `link` (`array`)\
+	Permanent/canonical/pretty url for your post. Replaces `<link rel='canonical' href='{https://github.com/ermish/shuji}' />`
+*   `your custom option` (`string`)\
+	You can add any additional front matter and it will be placed a meta tag based on the name. `<meta name="hello" content="{world}">`
+
+### React Helmet Mode (`frontMatterMode='reacthelmet'`):
+These front matter options will be added to `<Helmet>{front matter options}</Helmet>`
+
+### React Head Mode (`frontMatterMode='reacthead'`):
+These front matter options will be added to a react context. 
+This will not import `react-helmet` and will not set anything in the `<head>` section by default. This mode provides the ability to manage how you want to update the head.  
+
+### Front matter disabled Mode (`frontMatterMode='none'`):
+Front-matter will be ignored. 
 
 &nbsp;
 
