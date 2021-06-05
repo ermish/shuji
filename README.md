@@ -16,24 +16,27 @@
 ## What is Shuji?
 
 It was originally designed for being able to write blog files without the overhead of a framework like gatsby or jekyll.
-Templating frameworks used to be very beneficial, but often come with their own complexities and the biggest problem : **you lose control over your build system.**
+Templating frameworks used to be very beneficial, but often come with their own complexities and the biggest problem: **you lose control over your build system.**
 I got tired of waiting for bug-fixes, library updates, and having to work around their configurations. I just wanted an easy way to easily generate new blog articles without the overhead.
 
 ### Shuji lets you:
 
-* Design and organize your own templates however you want.
-* Configure your build system however you want. You can use webpack, parcel, rollup, or whatever you prefer.
-* Easily and automatically generate new pages from markdown files.
-* Converts Markdown files to JSX files, even including any html in the markdown.
-* Extract front-matter metadata into a react context.
+* Convert Markdown `.md` files to `.jsx` files. It supports html, css, and js within markdown and [front-matter support](##Front-Matter---How-does-it-work-in-Shuji?)
+* Design and organize your own folder structure however you want
+* Configure your build system however you want. You can use webpack, parcel, rollup, or whichever you prefer
+* Easily and automatically generate new articles/pages from markdown files
+* Extract front-matter metadata into a react context
 
 &nbsp;
 
 ## How it works
 
-* It will convert `.md` files that you provide, generate a file with an exported react component.
-  * front-matter is converted to either react helmet or react context object format. See more [below](##Config-Options)
-  * The actual markdown content will be converted to JSX.
+* `.md` files within a provided folder (default: `/markdown`) will be converted to `.jsx` files containing an exported react functional component and generated in the provided output folder (default: `/jsxMarkdown`).
+* If front-matter is detected, it is converted to [react helmet](https://www.npmjs.com/package/react-helmet) format by default or the alternative react context object format for improved customization.
+  * See format examples [below](##Config-Options)
+  * If you don't want to have Shuji parse front-matter, you can use a plugin to process it before Shuji runs.
+* Shuji can be run through the CLI, as a library, or integration with your build tool (webpack, parcel, etc.)
+  * You can choose to run it against a folder or feed the `.md` string directly to Shuji.
 
 &nbsp;
 
@@ -62,7 +65,7 @@ package.json:
 
 Alternatively, you can install shuji globally if you prefer not using yarn/npm `scripts`
 
-### Run the `-h` help command to see [options](##Config-Options)
+### Run `shuji` with the `-h` help command to see the full list of CLI [options](##Config-Options)
 
 &nbsp;
 

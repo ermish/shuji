@@ -37,7 +37,7 @@ const handleArgs = (cliArgs: string[]) : any => {
             type: 'number',
         })
         //Shuji Options
-        .group(['inputPath', 'outputPath', 'reactContextName', 'reactContextVarName', 'deleteExistingOutputFolder'], 'Config Parameters:')
+        .group(['inputPath', 'outputPath', 'useReactHelmet', 'reactHeadContextName', 'reactHeadContextVarName', 'deleteExistingOutputFolder'], 'Config Parameters:')
         .option('inputPath', {
             alias: 'i',
             describe: 'Target folder or file with .md files for Shuji to parse',
