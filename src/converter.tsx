@@ -98,14 +98,15 @@ const createFrontMatterJSXString = (propsToAssign: Object, useReactHelment: bool
 const createJsxComponentString = (componentName: string, reactString: string, useReactHelmet:boolean, frontmatterString: string, reactContextName?: string): string => {
     const capitalizedMethodName = componentName.replace(/^\w/, c => c.toUpperCase())
     const camelCasedComponentName = componentName.replace(/^\w/, c => c.toLowerCase())
-    
+
     let reactComponent = `${frontmatterString ? useReactHelmet ? `import { Helmet } from 'react-helmet'\n\n` : `import { ${reactContextName} } from 'reactHead'\n\n` : ''}`
-    + `export const ${capitalizedMethodName} = () => { \n  ${useReactHelmet ? '' : frontmatterString}
+    + `const ${capitalizedMethodName} = () => { \n  ${useReactHelmet ? '' : frontmatterString}
     return (
         <div className='${camelCasedComponentName}'>
         ${useReactHelmet ? frontmatterString : ''}\t${reactString}
         </div>
-    )\n}`
+    )\n}
+    \nexport default ${capitalizedMethodName}`
 
      return reactComponent
  }
@@ -121,7 +122,7 @@ const createReactHelmentElements = (propsToAssign: Object) : string => {
     for (const propName in propsToAssign) {
         const propValue = propsToAssign[propName as keyof Object]
         //clean up arrays
-        let propValueStringified = stringify(propValue).replace(/]|[|'[]/g, '') 
+        let propValueStringified = stringify(propValue).replace(/]|[|'[]/g, '')
 
         switch (propName) {
             case 'title':
@@ -154,7 +155,7 @@ const createReactHeadString = (propsToAssign: Object, reactContextVarName: strin
     if(!propsToAssign) {
         return ''
     }
-    
+
     //Example
     // const [metadata, setMetadata] = useContext('TestContext')
     // setMetadata({
