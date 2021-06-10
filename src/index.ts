@@ -26,12 +26,13 @@ export const defaultOptions = {
 const perfObserver = new PerformanceObserver((items:any) => {
     items.getEntries().forEach((entry:any ) => {
         const trimmedDuration = parseInt(entry.duration)
+        const currentTime = new Date().toLocaleTimeString()
         if(entry.name == 'shuji') {
-            logger().info(`Done in ${trimmedDuration}ms.`)
+            logger().info(`Done in ${trimmedDuration}ms. [${currentTime}]`)
             return
         }
 
-        logger().debug(`${entry.name} finished in ${trimmedDuration}ms.`)
+        logger().debug(`${entry.name} finished in ${trimmedDuration}ms. [${currentTime}]`)
     })
 })
 
