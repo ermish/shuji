@@ -113,7 +113,7 @@ const extractFrontMatter = (stringWithFrontMatter: string, frontMatterMode: fron
             ? createFrontMatterJSXString(data, frontMatterMode, reactContextVarName, reactContextName)
             : undefined
 
-        const componentNameFromFrontMatter = data['react-component-name'] ?? data['title']
+        const componentNameFromFrontMatter = data['react-component-name'] ?? 'shujiComponent'
 
         return {
             frontMatterJsxString: frontMatterJsxString,

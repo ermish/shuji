@@ -24,7 +24,7 @@ export const defaultOptions = {
 
 //TODO: use typescript types
 const perfObserver = new PerformanceObserver((items:any) => {
-    items.getEntries().forEach((entry:any ) => {
+    items.getEntries().forEach((entry:any) => {
         const trimmedDuration = parseInt(entry.duration)
         const currentTime = new Date().toLocaleTimeString()
         if(entry.name == 'shuji') {
