@@ -38,7 +38,7 @@ export const convertMarkdownFilesToJSXFiles = async (markdownFiles: File[], fron
         markdownFiles.map(async file => {
             const frontMatterAndMarkdown = extractFrontMatter(file.data, frontMatterMode, reactContextVarName, reactContextName)
             const jsxString = convertMarkdownAndHtmlToJsx(frontMatterAndMarkdown.markdownString)
-            const reactComponentString = createJsxComponentString(frontMatterAndMarkdown.componentNameFromFrontMatter ?? file.fileName, jsxString, frontMatterMode, frontMatterAndMarkdown.frontMatterJsxString, reactContextName)
+            const reactComponentString = createJsxComponentString(frontMatterAndMarkdown.componentNameFromFrontMatter ?? file.fileName, jsxString, frontMatterMode, frontMatterAndMarkdown.frontMatterJsxString, frontMatterAndMarkdown.frontMatterObject, reactContextName)
             return { fileName: file.fileName, data: reactComponentString }
         })
     )
@@ -63,7 +63,7 @@ export const convertMarkdownToJSX = async (markdownString: string, frontMatterMo
         throw new Error('You must provide a component name eithe through front matter or as a parameter')
     }
 
-    const reactComponentString = createJsxComponentString(componentName ?? frontMatterAndMarkdown.componentNameFromFrontMatter as string, jsxString, frontMatterMode, frontMatterAndMarkdown.frontMatterJsxString, reactContextName)
+    const reactComponentString = createJsxComponentString(componentName ?? frontMatterAndMarkdown.componentNameFromFrontMatter as string, jsxString, frontMatterMode, frontMatterAndMarkdown.frontMatterJsxString, frontMatterAndMarkdown.frontMatterObject, reactContextName)
 
     return reactComponentString
 }
@@ -85,7 +85,7 @@ export const convertMarkdownToJSXAndObject = async (markdownString: string, reac
         throw new Error('You must provide a component name eithe through front matter or as a parameter')
     }
 
-    const reactComponentString = createJsxComponentString(componentName ?? frontMatterAndMarkdown.componentNameFromFrontMatter as string, jsxString, frontMatterModeEnum.object, frontMatterAndMarkdown.frontMatterJsxString, reactContextName)
+    const reactComponentString = createJsxComponentString(componentName ?? frontMatterAndMarkdown.componentNameFromFrontMatter as string, jsxString, frontMatterModeEnum.object, undefined, frontMatterAndMarkdown.frontMatterObject, reactContextName)
 
     return [reactComponentString, frontMatterAndMarkdown.frontMatterObject]
 }
@@ -107,11 +107,11 @@ const extractFrontMatter = (stringWithFrontMatter: string, frontMatterMode: fron
 
         const frontMatterObject : any = frontMatterMode == frontMatterModeEnum.object 
             ? data
-            : null 
+            : undefined 
 
         const frontMatterJsxString = frontMatterMode == frontMatterModeEnum.reactHead || frontMatterMode == frontMatterModeEnum.reactHelmet
             ? createFrontMatterJSXString(data, frontMatterMode, reactContextVarName, reactContextName)
-            : ''
+            : undefined
 
         const componentNameFromFrontMatter = data['react-component-name'] ?? data['title']
 
@@ -143,17 +143,18 @@ const createFrontMatterJSXString = (propsToAssign: Object, frontMatterMode: fron
 
 }
 
-const createJsxComponentString = (componentName: string, reactString: string, frontMatterMode:frontMatterModeEnum, frontmatterString?: string, reactContextName?: string): string => {
+const createJsxComponentString = (componentName: string, reactString: string, frontMatterMode:frontMatterModeEnum, frontmatterString?: string, frontMatterObject?: object, reactContextName?: string): string => {
     const capitalizedMethodName = componentName.replace(/^\w/, c => c.toUpperCase())
     const camelCasedComponentName = componentName.replace(/^\w/, c => c.toLowerCase())
 
-    let reactComponent = `${frontmatterString ? frontMatterMode == frontMatterModeEnum.reactHelmet ? `import { Helmet } from 'react-helmet'\n\n` : `import { ${reactContextName} } from 'reactHead'\n\n` : ''}`
-    + `const ${capitalizedMethodName} = () => { \n  ${frontMatterMode == frontMatterModeEnum.reactHelmet ? '' : frontmatterString}
+    let reactComponent = `${frontmatterString ? frontMatterMode == frontMatterModeEnum.reactHelmet ? `import { Helmet } from 'react-helmet'\n\n` : `import { useContext } from 'react'\nimport { ${reactContextName} } from 'reactHead'\n\n` : ''}`
+    + `const ${capitalizedMethodName} = () => { \n  ${frontMatterMode == frontMatterModeEnum.reactHead ? `${frontmatterString}\n` : ''}
     return (
         <div className='${camelCasedComponentName}'>
-        ${frontmatterString && frontMatterMode != frontMatterModeEnum.none ? `${frontmatterString}\n\t\t` : ''}\t${reactString}
+        ${frontmatterString && frontMatterMode == frontMatterModeEnum.reactHelmet ? `${frontmatterString}\n\t\t` : ''}\t${reactString}
         </div>
     )\n}
+    ${frontMatterObject ? `\nexport const frontMatter = ${JSON.stringify(frontMatterObject, null, " ")}\n` : ``}
     \nexport default ${capitalizedMethodName}`
 
      return reactComponent
@@ -244,7 +245,7 @@ const createReactHeadString = (propsToAssign: Object, reactContextVarName: strin
     }
 
     const contextAssignmentString =
-    `\n\tconst [${camelCasedVarName}, ${setContextVarName}] = useContext('${reactContextName}')`
+    `\n\tconst [${camelCasedVarName}, ${setContextVarName}] = useContext(${reactContextName})`
     + `\n\n\t${setContextVarName}({`
         + `\n\t\t...${camelCasedVarName},`
         + `\n${propAssignmentString}`

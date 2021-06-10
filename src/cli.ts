@@ -37,7 +37,7 @@ const handleArgs = (cliArgs: string[]) : any => {
             type: 'number',
         })
         //Shuji Options
-        .group(['inputPath', 'outputPath', 'frontMatterMode', 'reactHeadContextName', 'reactHeadContextVarName', 'deleteExistingOutputFolder'], 'Config Parameters:')
+        .group(['inputPath', 'outputPath', 'deleteExistingOutputFolder', 'frontMatterMode', 'reactHeadContextName', 'reactHeadContextVarName'], 'Config Parameters:')
         .option('inputPath', {
             alias: 'i',
             describe: 'Target folder or file with .md files for Shuji to parse',
@@ -48,26 +48,27 @@ const handleArgs = (cliArgs: string[]) : any => {
             describe: 'Output destination folder to write the compiled .jsx files',
             type: 'string',
         })
+        .option('deleteExistingOutputFolder', {
+            alias: 'del',
+            describe: 'Delete existing content in the output folder (outputFolderPath) before writing compiled files',
+//            default: true,
+            type: 'boolean',
+        })
         .option('frontMatterMode', {
             alias: 'fm',
-            choices: ['reacthelmet','reacthead','none'],
-            describe: 'Toggle output style of front matter. "reacthelmet" uses react helmet syntax. "reactHead" will creat a react context you have more control over. This is referred to as "reactHead"',
+            choices: ['reacthelmet','reacthead','object', 'none'],
+            describe: 'Toggle output style of front matter. "reacthelmet" uses react helmet syntax.\n "reactHead" will create a react context called "reactHead" you have more control over. \n "object" will export the front matter as a js object. "none" will ignore front matter.',
             type: 'string',
         })
         .option('reactHeadContextName', {
             alias: 'rc',
-            describe: "The react context name in which any detected front-matter will be set through useContext('${reactContextName}')",
+            describe: "reactHead mode option: The react context name in which any detected front-matter will be set through useContext('${reactContextName}')",
             type: 'string',
         })
         .option('reactHeadContextVarName', {
             alias: 'rcv',
-            describe: "The name of the react context object and set method assigned from useContext('${reactContextName}'). ex. const [${yourVar}, set${YourVar}]",
+            describe: "reactHead mode option: The name of the react context object and set method assigned from useContext('${reactContextName}'). ex. const [${yourVar}, set${YourVar}]",
             type: 'string',
-        })
-        .option('deleteExistingOutputFolder', {
-            alias: 'del',
-            describe: 'Delete existing content in the output folder (outputFolderPath) before writing compiled files',
-            type: 'boolean',
         })
         .argv
 

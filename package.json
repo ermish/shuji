@@ -34,7 +34,7 @@
     },
     "scripts": {
         "build": "yarn && parcel build ./src/index.ts ./src/cli.ts --dist-dir dist",
-        "start": "node ./dist/cli.js -i='./src/samples' --fm='reacthead'",
+        "start": "node ./dist/cli.js -i='./src/samples' --fm='object'",
         "lint": "eslint ./src/**.js",
         "test": "jest --verbose",
         "cli": ""
